@@ -50,14 +50,40 @@ KinesisPlayerPolicy.json
 To create the role we will need and assume role policy document:
 
 ---
-PlayerP
+AssumeRolePolicy.json
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": {
+    "Effect": "Allow",
+    "Action": "sts:AssumeRole",
+    "Resource": "arn:aws:iam::123456789012:role/AuthorizedUserRole"
+  }
+}
+```
+---
+
+And then we create the role
+
+```
+# aws iam create-role --role-name KinesisPlayerRole \
+  --assume-role-policy-document file://AssumeRolePolicy.json
+```
+
+We then need to attach the policy to the role
+
+```
+# aws iam attach-role-policy --role-name KinesisPlayerRole \
+  --policy-arn arn:aws:iam::123456789012:policy/KinesisPlayerPolicy
+```
 
 You could then assume the role using the sts interface
 
 ```
 # aws sts assume-role \
   --role-arn arn:aws:iam::123456789012:role/KinesisPlayerRole \
-  [[--role-session-name]] player
+  --role-session-name player
 ```
 
 
